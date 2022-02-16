@@ -28,6 +28,7 @@ class PostsURLTests(TestCase):
         cls.private_templates_urls = {
             '/posts/' + str(cls.post.pk) + '/edit/': 'posts/post_create.html',
             '/create/': 'posts/post_create.html',
+            '/follow/': 'posts/follow.html',
         }
 
     def setUp(self):

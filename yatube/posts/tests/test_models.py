@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ..models import Group, Post, User
+from ..models import Group, Post, User, Comment
 
 
 class PostModelTest(TestCase):
@@ -17,6 +17,11 @@ class PostModelTest(TestCase):
             author=cls.user,
             text='Тестовая запись проверки 15 символов',
             group=cls.group,
+        )
+        cls.comment = Comment.objects.create(
+            author=cls.user,
+            text='Тестовый комментарий автора',
+            post=cls.post
         )
 
     def test_models_have_correct_object_names(self):
@@ -77,6 +82,22 @@ class PostModelTest(TestCase):
             with self.subTest(value=value):
                 self.assertEqual(
                     self.post._meta.get_field(value).verbose_name,
+                    expected,
+                    'verbose_name модели Post не совпадает с ожидаемыми.'
+                )
+
+    def test_verbose_name_comment(self):
+        """verbose_name Comment в полях совпадает с ожидаемым."""
+        field_verbose_name = {
+            'text': 'Текст комментария',
+            'created': 'Дата публикации',
+            'author': 'Автор',
+            'post': 'Пост',
+        }
+        for value, expected in field_verbose_name.items():
+            with self.subTest(value=value):
+                self.assertEqual(
+                    self.comment._meta.get_field(value).verbose_name,
                     expected,
                     'verbose_name модели Post не совпадает с ожидаемыми.'
                 )

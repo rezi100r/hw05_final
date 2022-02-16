@@ -72,7 +72,7 @@ def post_detail(request, post_id):
     """Функция просмотра отдельного поста"""
 
     template = 'posts/post_detail.html'
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all()
     form = CommentForm()
     posts_count = post.author.posts.all().count()
@@ -130,7 +130,7 @@ def post_create(request):
         }
         return render(request, template, context)
 
-    form = PostForm(request.POST or None, files=request.FILES or None,)
+    form = PostForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -157,12 +157,12 @@ def add_comment(request, post_id):
 def follow_index(request):
     """Функция избранных авторов"""
     template = 'posts/follow.html'
-    # информация о текущем пользователе доступна в переменной request.user
-    faivorite_authors = Follow.objects.filter(user=request.user).all()
-    post_list = []
-    for follow in faivorite_authors:
-        for post in follow.author.posts.all():
-            post_list.append(post)
+    faivorite_authors = Follow.objects.filter(
+        user=request.user
+    ).all().values_list('author')
+    post_list = Post.objects.select_related(
+        'author'
+    ).all().filter(author_id__in=faivorite_authors)
     paginator = Paginator(post_list, NUMBER_OF_POSTS)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -177,21 +177,19 @@ def profile_follow(request, username):
     """Подписаться на автора"""
     if request.user.username == username:
         return redirect('posts:index')
-    if len(Follow.objects.filter(
-            user=request.user
-    ).filter(author__username=username)) != 0:
-        return redirect('posts:index')
-    follow = Follow()
-    follow.user = request.user
-    follow.author = User.objects.get(username=username)
-    follow.save()
+    obj, created = Follow.objects.get_or_create(
+        user=request.user,
+        author=User.objects.get(username=username)
+    )
+    if created:
+        obj.save()
     return redirect('posts:index')
 
 
 @login_required
 def profile_unfollow(request, username):
     """Отписаться от автора"""
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     unfollow = Follow.objects.filter(user=request.user).filter(author=author)
     unfollow.delete()
     return redirect('posts:index')

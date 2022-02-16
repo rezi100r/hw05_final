@@ -179,7 +179,7 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(check_comment.text, form_data['text'])
         self.assertEqual(check_comment.author, self.user)
         self.assertEqual(
-            response.context['comments'].latest('pk'),
+            response.context['comments'][0],
             check_comment
         )
 

@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-# from pytils.translit import slugify
 
 
 User = get_user_model()
@@ -27,11 +26,6 @@ class Group(models.Model):
 
     def __str__(self):
         return str(self.title)
-
-    # def save(self, *args, **kwargs):
-    #    if not self.slug:
-    #       self.slug = slugify(self.title)[:60]
-    #    super().save(*args, **kwargs)
 
 
 class Post(models.Model):
@@ -113,3 +107,11 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_follow'
+            )
+        ]
