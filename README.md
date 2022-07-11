@@ -13,9 +13,21 @@ SQLite
 pip install -r requirements.txt
 ``` 
 - В папке с файлом manage.py выполните команду:
+- Выполнить migrate
 ```
-python3 manage.py createsuperuser
-python3 manage.py runserver
+python manage.py migrate
+```
+- Создайте пользователя
+```
+python manage.py createsuperuser
+```
+- (или) Сменить пароль для пользователя admin
+```
+python manage.py changepassword admin
+```
+- Запуск сервиса
+```
+python manage.py runserver
 ```
 ### Авторы
 Николай Егорченков
