@@ -1,12 +1,11 @@
-# hw05_final
-
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+# Yatube - социальная сеть для публикации личных дневников.
 
 ### Описание
-Социальная сеть для публикации личных дневников.
+Социальная сеть для публикации личных дневников. Реализована пагинация постов и кэширование данных, так же реализована регистрация пользователей с верификацией данных, сменой и восстановлением пароля через почту. Написаны тесты на unittest, проверяющие работу сервиса.
 ### Технологии
-Python 3.10
+Python 3.8
 Django 2.2.19
+SQLite
 ### Запуск проекта в dev-режиме
 - Установите и активируйте виртуальное окружение
 - Установите зависимости из файла requirements.txt
@@ -15,6 +14,7 @@ pip install -r requirements.txt
 ``` 
 - В папке с файлом manage.py выполните команду:
 ```
+python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 ### Авторы
